@@ -1,0 +1,20 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+requests = "*"
+cov-core = "*"
+coverage = "*"
+flake8 = "*"
+mock = "*"
+py = "*"
+aiohttp = "*"
+pytest = "*"
+pytest-asyncio = "*"
+
+[requires]
+python_version = "3.8"

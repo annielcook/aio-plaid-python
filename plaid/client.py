@@ -88,34 +88,34 @@ class Client(object):
         self.Sandbox = Sandbox(self)
         self.Transactions = Transactions(self)
 
-    def post(self, path, data, is_json=True):
+    async def post(self, path, data, is_json=True):
         '''Make a post request with client_id and secret key.'''
         post_data = {
             'client_id': self.client_id,
             'secret': self.secret,
         }
         post_data.update(data)
-        return self._post(path, post_data, is_json)
+        return await self._post(path, post_data, is_json)
 
-    def post_public(self, path, data, is_json=True):
+    async def post_public(self, path, data, is_json=True):
         '''Make a post request requiring no auth.'''
-        return self._post(path, data, is_json)
+        return await self._post(path, data, is_json)
 
-    def post_public_key(self, path, data, is_json=True):
+    async def post_public_key(self, path, data, is_json=True):
         '''Make a post request using a public key.'''
         post_data = {
             'public_key': self.public_key
         }
         post_data.update(data)
-        return self._post(path, post_data, is_json)
+        return await self._post(path, post_data, is_json)
 
-    def _post(self, path, data, is_json):
+    async def _post(self, path, data, is_json):
         headers = {}
         if self.api_version is not None:
             headers['Plaid-Version'] = self.api_version
         if self.client_app is not None:
             headers['Plaid-Client-App'] = self.client_app
-        return post_request(
+        return await post_request(
             urljoin('https://' + self.environment + '.plaid.com', path),
             data=data,
             timeout=self.timeout,

@@ -4,14 +4,14 @@ from plaid.api.api import API
 class PublicToken(API):
     '''Endpoints for translating between public tokens and access tokens.'''
 
-    def exchange(self, public_token):
+    async def exchange(self, public_token):
         '''
         Exchange a Link public_token for an API access_token.
         (`HTTP docs <https://plaid.com/docs/api/#exchange-token-flow>`__)
 
         :param  str     public_token:
         '''
-        return self.client.post('/item/public_token/exchange', {
+        return await self.client.post('/item/public_token/exchange', {
             'public_token': public_token,
         })
 
@@ -102,7 +102,7 @@ class Item(API):
             'access_token': access_token,
         })
 
-    def remove(self, access_token):
+    async def remove(self, access_token):
         '''
         Remove an item.
         (`HTTP docs <https://plaid.com/docs/api/#remove-an-item>`__)
@@ -111,6 +111,6 @@ class Item(API):
 
         :param  str     access_token:
         '''
-        return self.client.post('/item/remove', {
+        return await self.client.post('/item/remove', {
             'access_token': access_token,
         })

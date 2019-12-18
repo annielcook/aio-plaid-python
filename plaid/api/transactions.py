@@ -4,15 +4,15 @@ from plaid.api.api import API
 class Transactions(API):
     '''Transactions endpoints.'''
 
-    def get(self,
-            access_token,
-            start_date,
-            end_date,
-            _options=None,
-            account_ids=None,
-            count=None,
-            offset=None,
-            ):
+    async def get(self,
+                  access_token,
+                  start_date,
+                  end_date,
+                  _options=None,
+                  account_ids=None,
+                  count=None,
+                  offset=None,
+                  ):
         '''
         Return accounts and transactions for an item.
         (`HTTP docs <https://plaid.com/docs/api/#transactions>`__)
@@ -42,7 +42,7 @@ class Transactions(API):
         if offset is not None:
             options['offset'] = offset
 
-        return self.client.post('/transactions/get', {
+        return await self.client.post('/transactions/get', {
             'access_token': access_token,
             'start_date': start_date,
             'end_date': end_date,
