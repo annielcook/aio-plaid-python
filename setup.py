@@ -11,13 +11,13 @@ if not version:
 url = 'https://github.com/plaid/plaid-python'
 
 setup(
-    name='plaid-python',
+    name='aio-plaid-python',
     version=version,
-    description='Python client library for the Plaid API and Link',
+    description='Async Python client library for the Plaid API and Link',
     long_description='',
     keywords='api, client, plaid',
-    author='Plaid Technologies',
-    author_email='developers@plaid.com',
+    author='Annie Cook',
+    author_email='annielauriecook@gmail.com',
     url=url,
     download_url='{}/tarball/v{}'.format(url, version),
     license='MIT',
@@ -28,12 +28,7 @@ setup(
     include_package_data=True,
     classifiers=[
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.4",
-        "Programming Language :: Python :: 3.5",
-        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.8",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Environment :: Web Environment",
     ]

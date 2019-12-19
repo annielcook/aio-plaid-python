@@ -1,9 +1,11 @@
+import pytest
 from tests.integration.util import (
     create_client,
 )
 
 
-def test_get():
+@pytest.mark.asyncio
+async def test_get():
     client = create_client()
-    response = client.Categories.get()
+    response = await client.Categories.get()
     assert response['categories'] is not None

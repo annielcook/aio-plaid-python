@@ -1,31 +1,13 @@
+import pytest
 import time
+
 from plaid.errors import PlaidError
-from tests.integration.util import (
-    create_client,
-    SANDBOX_INSTITUTION,
-)
 
 
-access_token = None
-
-
-def setup_module(module):
-    client = create_client()
-    pt_response = client.Sandbox.public_token.create(
-        SANDBOX_INSTITUTION, ['assets'])
-    exchange_response = client.Item.public_token.exchange(
-        pt_response['public_token'])
-    global access_token
-    access_token = exchange_response['access_token']
-
-
-def teardown_module(module):
-    client = create_client()
-    client.Item.remove(access_token)
-
-
-def test_full_flow():
-    client = create_client()
+@pytest.mark.skip(reason='"asset reports with insights" feature is not enabled for your account')
+@pytest.mark.asyncio
+async def test_full_flow(setup_and_teardown_assets_client):
+    access_token, client = setup_and_teardown_assets_client
 
     # create an asset report for one item
     options = {
@@ -41,7 +23,7 @@ def test_full_flow():
             'email': 'jane.doe@example.com',
         }
     }
-    response = client.AssetReport.create(
+    response = await client.AssetReport.create(
         [access_token],
         days_requested=60,
         options=options)
@@ -51,12 +33,12 @@ def test_full_flow():
     assert asset_report_id is not None
 
     # retrieve the asset report
-    response = poll_for_asset_report(client, asset_report_token)
+    response = await poll_for_asset_report(client, asset_report_token)
     report = response['report']
     assert report is not None
 
     # retrieve the asset report as an Asset Report with Insights
-    response = client.AssetReport.get(asset_report_token, True)
+    response = await client.AssetReport.get(asset_report_token, True)
     report = response['report']
     assert report is not None
 
@@ -66,38 +48,38 @@ def test_full_flow():
         name_exists_for_some_transaction(report))
 
     # retrieve the asset report as a PDF
-    pdf = client.AssetReport.get_pdf(asset_report_token)
+    pdf = await client.AssetReport.get_pdf(asset_report_token)
     assert pdf is not None
 
     # create a filtered copy of the asset report
     account_ids_to_exclude = [report['items'][0]['accounts'][0]['account_id']]
-    response = client.AssetReport.filter(
+    response = await client.AssetReport.filter(
         asset_report_token, account_ids_to_exclude)
     assert response['asset_report_token'] is not None
 
     # create a refreshed copy of the asset report
-    response = client.AssetReport.refresh(asset_report_token, 10)
+    response = await client.AssetReport.refresh(asset_report_token, 10)
     assert response['asset_report_token'] is not None
 
     # create an audit copy
-    response = client.AssetReport.audit_copy.create(
+    response = await client.AssetReport.audit_copy.create(
         asset_report_token,
         client.client_id)
     audit_copy_token = response['audit_copy_token']
     assert audit_copy_token is not None
 
     # get the audit copy
-    response = client.AssetReport.audit_copy.get(audit_copy_token)
+    response = await client.AssetReport.audit_copy.get(audit_copy_token)
     audit_copy = response['report']
     assert audit_copy is not None
 
     # remove the audit copy token
-    response = client.AssetReport.audit_copy.remove(audit_copy_token)
+    response = await client.AssetReport.audit_copy.remove(audit_copy_token)
     removed = response['removed']
     assert removed
 
     # remove the asset report
-    response = client.AssetReport.remove(asset_report_token)
+    response = await client.AssetReport.remove(asset_report_token)
     removed = response['removed']
     assert removed
 
@@ -105,18 +87,18 @@ def test_full_flow():
 def name_exists_for_some_transaction(report):
     for account in report['items'][0]['accounts']:
         if len(account['transactions']) > 0:
-            return (account['transactions'][0]['name'] is not None)
+            return account['transactions'][0]['name'] is not None
 
     return False
 
 
-def poll_for_asset_report(client, asset_report_token, retries=20):
+async def poll_for_asset_report(client, asset_report_token, retries=20):
     try:
-        return client.AssetReport.get(asset_report_token)
+        return await client.AssetReport.get(asset_report_token)
     except PlaidError as e:
         if e.code == 'PRODUCT_NOT_READY' and retries > 0:
             time.sleep(1)
-            return poll_for_asset_report(
+            return await poll_for_asset_report(
                 client,
                 asset_report_token,
                 retries - 1)
