@@ -79,20 +79,3 @@ async def setup_and_teardown_income_client() -> Tuple[str, Client]:
 async def setup_and_teardown_liabilities_client() -> Tuple[str, Client]:
     async for access_token, client in setup_and_teardown_client('liabilities'):
         return access_token, client
-
-#
-# @pytest.fixture
-# async def setup_and_teardown_identity_client() -> Tuple[str, Client]:
-#     yield setup_and_teardown_client('identity')
-#
-#
-# @pytest.fixture
-# async def setup_and_teardown_identity_client() -> Tuple[str, Client]:
-#     yield setup_and_teardown_client('identity')
-#
-#
-# @pytest.fixture
-# async def setup_and_teardown_identity_client() -> Tuple[str, Client]:
-#     yield setup_and_teardown_client('identity')
-#
-
