@@ -36,10 +36,12 @@ class Client(object):
                  secret,
                  public_key,
                  environment,
+                 request_session,
                  suppress_warnings=False,
                  timeout=DEFAULT_TIMEOUT,
                  api_version=None,
-                 client_app=None):
+                 client_app=None,
+                 ):
         '''
         Initialize a client with credentials.
 
@@ -53,7 +55,7 @@ class Client(object):
         :arg    str     api_version:        API version to use for requests
         :arg    str     client_app:         Internal header to include
                                             in requests
-
+        :arg            request_session:    aiohttp ClientSession for http request
         '''
         self.client_id = client_id
         self.secret = secret
@@ -63,6 +65,7 @@ class Client(object):
         self.timeout = timeout
         self.api_version = api_version
         self.client_app = client_app
+        self.request_session = request_session
 
         if self.environment == 'development' and not self.suppress_warnings:
             warnings.warn('''
@@ -117,6 +120,7 @@ class Client(object):
             headers['Plaid-Client-App'] = self.client_app
         return await post_request(
             urljoin('https://' + self.environment + '.plaid.com', path),
+            request_session=self.request_session,
             data=data,
             timeout=self.timeout,
             is_json=is_json,
