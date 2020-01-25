@@ -1,4 +1,3 @@
-import aiohttp
 import json
 
 from functools import partial
@@ -18,6 +17,7 @@ except ImportError:
 
 async def _requests_http_request(
         url,
+        request_session,
         method,
         data,
         headers,
@@ -25,13 +25,12 @@ async def _requests_http_request(
     normalized_method = method.lower()
     headers.update({'User-Agent': 'Plaid Python v{}'.format(__version__)})
     if normalized_method in ALLOWED_METHODS:
-        async with aiohttp.ClientSession() as session:
-            return await getattr(session, normalized_method)(
-                url,
-                json=data,
-                headers=headers,
-                timeout=timeout,
-            )
+        return await getattr(request_session, normalized_method)(
+            url,
+            json=data,
+            headers=headers,
+            timeout=timeout,
+        )
     else:
         raise Exception(
             'Invalid request method {}'.format(method)
@@ -40,6 +39,7 @@ async def _requests_http_request(
 
 async def http_request(
         url,
+        request_session,
         method=None,
         data=None,
         headers=None,
@@ -47,6 +47,7 @@ async def http_request(
         is_json=True):
     response = await _requests_http_request(
         url,
+        request_session,
         method,
         data or {},
         headers or {},
