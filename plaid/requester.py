@@ -25,7 +25,6 @@ async def _requests_http_request(
     normalized_method = method.lower()
     headers.update({'User-Agent': 'Plaid Python v{}'.format(__version__)})
     if normalized_method in ALLOWED_METHODS:
-        # async with aiohttp.ClientSession() as session:
         return await getattr(request_session, normalized_method)(
             url,
             json=data,
