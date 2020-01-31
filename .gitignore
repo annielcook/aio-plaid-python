@@ -19,3 +19,4 @@ docs/objects.inv
 dist
 
 .idea/*
+tests/.idea/*
