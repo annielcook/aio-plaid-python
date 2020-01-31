@@ -5,7 +5,7 @@ from typing import Tuple, Optional, AsyncGenerator
 from tests.integration.util import (
     create_client,
     SANDBOX_INSTITUTION,
-)
+    SESSION_MANAGER)
 
 
 async def setup_and_teardown_client(product: str, webhook: Optional[str] = None) -> AsyncGenerator[str, Client]:
@@ -79,3 +79,11 @@ async def setup_and_teardown_income_client() -> Tuple[str, Client]:
 async def setup_and_teardown_liabilities_client() -> Tuple[str, Client]:
     async for access_token, client in setup_and_teardown_client('liabilities'):
         return access_token, client
+
+
+@pytest.fixture(autouse=True, scope='function')
+async def close_session():
+    yield
+    if SESSION_MANAGER['session'] is not None and not SESSION_MANAGER['session'].closed:
+        print('Closing aio http session!')
+        await SESSION_MANAGER['session'].close()
