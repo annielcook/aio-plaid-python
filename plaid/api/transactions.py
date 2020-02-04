@@ -41,7 +41,6 @@ class Transactions(API):
             options['count'] = count
         if offset is not None:
             options['offset'] = offset
-
         return await self.client.post('/transactions/get', {
             'access_token': access_token,
             'start_date': start_date,
