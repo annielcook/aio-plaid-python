@@ -15,14 +15,14 @@ class PublicToken(API):
             'public_token': public_token,
         })
 
-    def create(self, access_token):
+    async def create(self, access_token):
         '''
         Create a Link public_token for an API access_token.
         (`HTTP docs <https://plaid.com/docs/api/#create-public-token>`__)
 
         :param  str     access_token:
         '''
-        return self.client.post('/item/public_token/create', {
+        return await self.client.post('/item/public_token/create', {
             'access_token': access_token,
         })
 
@@ -30,18 +30,18 @@ class PublicToken(API):
 class AccessToken(API):
     '''Access token endpoints.'''
 
-    def invalidate(self, access_token):
+    async def invalidate(self, access_token):
         '''
         Rotate the access token for an item.
         (`HTTP docs <https://plaid.com/docs/api/#rotate-access-token>`__)
 
         :param  str     access_token:
         '''
-        return self.client.post('/item/access_token/invalidate', {
+        return await self.client.post('/item/access_token/invalidate', {
             'access_token': access_token,
         })
 
-    def update_version(self, access_token):
+    async def update_version(self, access_token):
         '''
         Transition an access token to work with the current version of
         the Plaid API
@@ -50,7 +50,7 @@ class AccessToken(API):
 
         :param  str      access_token:
         '''
-        return self.client.post('/item/access_token/update_version', {
+        return await self.client.post('/item/access_token/update_version', {
             'access_token_v1': access_token,
         })
 
@@ -58,7 +58,7 @@ class AccessToken(API):
 class Webhook(API):
     '''Webhook endpoints.'''
 
-    def update(self, access_token, webhook):
+    async def update(self, access_token, webhook):
         '''
         Update the webhook for an Item.
         (`HTTP docs <https://plaid.com/docs/api/#update-webhook>`__)
@@ -66,7 +66,7 @@ class Webhook(API):
         :param  str     access_token:
         :param  str     webhook: The URL of the webhook to associate.
         '''
-        return self.client.post('./item/webhook/update', {
+        return await self.client.post('./item/webhook/update', {
             'access_token': access_token,
             'webhook': webhook,
         })
@@ -91,14 +91,14 @@ class Item(API):
         self.public_token = PublicToken(client)
         self.webhook = Webhook(client)
 
-    def get(self, access_token):
+    async def get(self, access_token):
         '''
         Get information about the status of an item.
         (`HTTP docs <https://plaid.com/docs/api/#get-item>`__)
 
         :param  str     access_token:
         '''
-        return self.client.post('/item/get', {
+        return await self.client.post('/item/get', {
             'access_token': access_token,
         })
 
