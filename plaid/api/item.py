@@ -15,14 +15,14 @@ class PublicToken(API):
             'public_token': public_token,
         })
 
-    def create(self, access_token):
+    async def create(self, access_token):
         '''
         Create a Link public_token for an API access_token.
         (`HTTP docs <https://plaid.com/docs/api/#create-public-token>`__)
 
         :param  str     access_token:
         '''
-        return self.client.post('/item/public_token/create', {
+        return await self.client.post('/item/public_token/create', {
             'access_token': access_token,
         })
 
